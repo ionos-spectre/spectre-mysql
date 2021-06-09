@@ -5,6 +5,8 @@ rvm:
 
 dist: xenial
 os: linux
+services:
+  - docker
 
 branches:
   only:
