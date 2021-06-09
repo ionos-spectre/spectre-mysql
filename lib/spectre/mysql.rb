@@ -1,6 +1,7 @@
 require 'logger'
 require 'mysql2'
 require 'spectre'
+require 'ostruct'
 
 
 module Spectre
@@ -34,6 +35,7 @@ module Spectre
     end
 
     class << self
+      @@logger = ::Logger.new(STDOUT)
       @@mysql_cfg = {}
       @@result = nil
       @@last_conn = nil

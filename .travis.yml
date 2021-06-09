@@ -8,19 +8,28 @@ os: linux
 
 branches:
   only:
-   - master
-   - /^\d\.\d\.\d(?:-\S*)?$/
+    - master
+    - /^\d\.\d\.\d(?:-\S*)?$/
+
+before_install:
+  - docker pull mysql
+  - docker run -d -p 127.0.0.1:3306:3306 -e "MYSQL_ROOT_PASSWORD=dev" mysql
+  - gem install spectre-core
 
 jobs:
   include:
+    - stage: test
+      script:
+        - bundle exec rspec spec
+        - bundle exec spectre -c testing/spectre/spectre.yml
     - stage: build
       script:
-       - bundle exec rspec spec
-       - bundle exec rake build
+        - bundle exec rspec spec
+        - bundle exec spectre -c testing/spectre/spectre.yml
     - stage: deploy
       if: branch =~ /^\d\.\d\.\d(?:-\S*)?$/
       script:
-       - bundle exec rake build
-       - 'echo -e "---\n:rubygems_api_key: $RUBYGEMS_APIKEY" > ~/.gem/credentials'
-       - chmod 0600 ~/.gem/credentials
-       - gem push pkg/*.gem
+        - bundle exec rake build
+        - 'echo -e "---\n:rubygems_api_key: $RUBYGEMS_APIKEY" > ~/.gem/credentials'
+        - chmod 0600 ~/.gem/credentials
+        - gem push pkg/*.gem
