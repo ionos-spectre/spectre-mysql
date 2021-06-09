@@ -12,9 +12,7 @@ branches:
     - /^\d\.\d\.\d(?:-\S*)?$/
 
 before_install:
-  - docker pull mysql
-  - docker run -d -p 127.0.0.1:3306:3306 -e "MYSQL_ROOT_PASSWORD=dev" mysql
-  - gem install spectre-core
+  - docker compose --project-directory ./testing/docker/spectre-mysql -d up
 
 jobs:
   include:
