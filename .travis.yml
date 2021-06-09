@@ -14,7 +14,7 @@ branches:
     - /^\d\.\d\.\d(?:-\S*)?$/
 
 before_install:
-  - docker compose --project-directory ./testing/docker/spectre-mysql up -d
+  - docker-compose --project-directory ./testing/docker/spectre-mysql up -d
 
 jobs:
   include:
