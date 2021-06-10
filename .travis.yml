@@ -27,8 +27,7 @@ jobs:
         - bundle exec spectre -c testing/spectre/spectre.yml
     - stage: build
       script:
-        - bundle exec rspec spec
-        - bundle exec spectre -c testing/spectre/spectre.yml
+        - bundle exec rake build
     - stage: deploy
       if: branch =~ /^\d\.\d\.\d(?:-\S*)?$/
       script:
