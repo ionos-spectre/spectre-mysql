@@ -12,4 +12,4 @@ resource_paths:
   - '../common/resources'
   - './resources'
 include:
- - spectre/mysql
+  - spectre/mysql
