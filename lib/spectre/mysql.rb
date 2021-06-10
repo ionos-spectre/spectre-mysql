@@ -7,7 +7,7 @@ require 'ostruct'
 module Spectre
   module MySQL
 
-    class MySqlQuery < DslClass
+    class MySqlQuery < Spectre::DslClass
       def initialize query
         @__query = query
       end
