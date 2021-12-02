@@ -1,8 +1,8 @@
 # Spectre MySQL
 
-[![Build Status](https://www.travis-ci.com/cneubaur/spectre-mysql.svg?branch=master)](https://www.travis-ci.com/cneubaur/spectre-mysql)
+[![Gem Version](https://badge.fury.io/rb/spectre-mysql.svg)](https://badge.fury.io/rb/spectre-mysql)
 
-This is a [spectre](https://github.com/cneubauer/spectre-core) module which provides MySQL access functionality to the spectre framework.
+This is a [spectre](https://github.com/ionos-spectre/spectre-core) module which provides MySQL access functionality to the spectre framework.
 
 ## Install
 
