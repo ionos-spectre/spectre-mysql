@@ -102,7 +102,7 @@ end
 
 ### Troubleshoot
 
-Did you have some trouble installing the gem `mysql2`? Doesn't suprise.
+Did you have some trouble installing the gem `mysql2`? Doesn't surprise.
 
 On linux it is fairly easy fix. Just execute.
 
