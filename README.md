@@ -104,11 +104,11 @@ end
 
 Did you have some trouble installing the gem `mysql2`? Doesn't surprise.
 
-On linux it is fairly easy fix. Just execute.
+On linux it is fairly easy fix. Just use your distribution's package manager to install the _mysqlclient development libraries_ (followed by using _gem_ to install `mysql2`). On Debian based systems it might look like this:
 
 ```bash
-sudo apt-get install libmysqlclient-dev
-sudo gem install mysql2
+$ sudo apt-get install libmysqlclient-dev  # default-libmysqlclient-dev on straight Debian
+$ sudo gem install mysql2
 ```
 
 Yes, there is a reason why I mentioned the _easy_ linux part. On Windows it is quite tricky... ok, not tricky, rather a pain... a pain in the a**.
