@@ -7,7 +7,7 @@ This is a [spectre](https://github.com/ionos-spectre/spectre-core) module which 
 ## Install
 
 ```bash
-$ gem install spectre-mysql
+$ sudo gem install spectre-mysql
 ```
 
 ## Configure
