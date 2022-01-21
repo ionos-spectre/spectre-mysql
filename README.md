@@ -38,10 +38,10 @@ You can set the following properties in the `mysql` block:
 
 | Method | Arguments | Multiple | Description |
 | -------| ----------| -------- | ----------- |
-| `host` | `string` | no | The hostname of the database to connec to |
+| `host` | `string` | no | The hostname of the database to connect to |
 | `database` | `string` | no | The database to use, when executing queries |
 | `username` | `string` | no | The username to authenticate at the database |
-| `password` | `string` | no | The passwort for authentication |
+| `password` | `string` | no | The password for authentication |
 | `query` | `string` | yes | The queries which will be executed. Note that only the last query generates a `result` |
 
 The result of the query can be accessed by the `result` function. It contains all rows returned by the database.
@@ -56,7 +56,7 @@ mysql 'localhost' do
   username 'root'
   password 'dev'
 
-  query "INSERT INTO todos VALUES('Spook arround', false)"
+  query "INSERT INTO todos VALUES('Spook around', false)"
   query "INSERT INTO todos VALUES('Scare some people', false)"
   query "SELECT * FROM todos"
 end
@@ -85,13 +85,13 @@ and use the connection by providing the section name to the `mysql` call.
 
 ```ruby
 mysql 'developer' do
-  query "INSERT INTO todos VALUES('Spook arround', false)"
+  query "INSERT INTO todos VALUES('Spook around', false)"
   query "INSERT INTO todos VALUES('Scare some people', false)"
   query "SELECT * FROM todos"
 end
 ```
 
-If you want to execute additional queries with the same connection as on the previous `mysql` block, you can simply ommit the `name` parameter.
+If you want to execute additional queries with the same connection as on the previous `mysql` block, you can simply omit the `name` parameter.
 
 ```ruby
 mysql do
@@ -112,7 +112,7 @@ $ sudo gem install mysql2
 ```
 
 Yes, there is a reason why I mentioned the _easy_ linux part. On Windows it is quite tricky... ok, not tricky, rather a pain... a pain in the a**.
-A pain you should noone wish. A pain whereas even hell is a spa.
+A pain you should no one wish. A pain whereas even hell is a spa.
 
 Want to go through this?
 
