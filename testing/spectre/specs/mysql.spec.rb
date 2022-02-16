@@ -39,7 +39,7 @@ describe 'spectre/mysql' do
 
     mysql 'developer' do
       database 'developer'
-      query "INSERT INTO todos VALUES('Spook arround', false)"
+      query "INSERT INTO todos VALUES('Spook around', false)"
       query "INSERT INTO todos VALUES('Scare some people', false)"
     end
   end
@@ -70,8 +70,8 @@ describe 'spectre/mysql' do
     end
 
     mysql do
-      query "UPDATE todos SET done = TRUE WHERE todo_desc = 'Spook arround'"
-      query "SELECT * FROM todos WHERE todo_desc = 'Spook arround'"
+      query "UPDATE todos SET done = TRUE WHERE todo_desc = 'Spook around'"
+      query "SELECT * FROM todos WHERE todo_desc = 'Spook around'"
     end
 
     expect 'the todo to be done' do
