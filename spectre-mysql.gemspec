@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Adds MySQL access functionality to the spectre framework'
   spec.homepage      = 'https://github.com/ionos-spectre/spectre-mysql'
   spec.license       = 'MIT'
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.5.0')
+  spec.required_ruby_version = Gem::Requirement.new('>= 3.0.0')
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org/'
 

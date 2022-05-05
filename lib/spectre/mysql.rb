@@ -6,7 +6,6 @@ require 'ostruct'
 
 module Spectre
   module MySQL
-
     class MySqlQuery < Spectre::DslClass
       def initialize query
         @__query = query
@@ -29,7 +28,7 @@ module Spectre
       end
 
       def query statement
-        @__query['query'] = [] if not @__query.key? 'query'
+        @__query['query'] = [] unless @__query.key? 'query'
         @__query['query'].append(statement)
       end
     end
@@ -45,7 +44,9 @@ module Spectre
 
         if name != nil and @@mysql_cfg.key? name
           query.merge! @@mysql_cfg[name]
-          raise "No `host' set for MySQL client '#{name}'. Check your MySQL config in your environment." if !query['host']
+
+          raise "No `host' set for MySQL client '#{name}'. Check your MySQL config in your environment." unless query['host']
+
         elsif name != nil
           query['host'] = name
         elsif @@last_conn == nil
@@ -59,7 +60,7 @@ module Spectre
             host: query['host'],
             username: query['username'],
             password: query['password'],
-            database: query['database']
+            database: query['database'],
           }
         end
 
@@ -81,6 +82,7 @@ module Spectre
 
       def result
         raise 'No MySQL query has been executed yet' unless @@result
+
         @@result
       end
     end
