@@ -1,5 +1,7 @@
 # Spectre MySQL
 
+[![Build](https://github.com/ionos-spectre/spectre-mysql/actions/workflows/build.yml/badge.svg)](https://github.com/ionos-spectre/spectre-mysql/actions/workflows/build.yml)
+
 [![Gem Version](https://badge.fury.io/rb/spectre-mysql.svg)](https://badge.fury.io/rb/spectre-mysql)
 
 This is a [spectre](https://github.com/ionos-spectre/spectre-core) module which provides MySQL access functionality to the spectre framework.
