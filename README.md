@@ -172,7 +172,7 @@ RuntimeError (Incorrect MySQL client library version! This gem was compiled for 
 
 "Ok, got it". Cool, but what's about this client library `10.5.5` version? Isn't MySQL only at `8.0.32` (it was at that point I wrote this)? Yes, it is, but who said we speak about MySQL? Ever heard about *MariaDB*, you dip sh**? Yes you got it, we need the MariaDB connector libs.
 
-Go to https://mariadb.com/downloads/#connectors and download version `3.1.15`. Yes, *64bit* is fine. Install it and finally install the `mysql2` gem.
+Go to https://mariadb.com/downloads/#connectors and download version `3.1.*`. Yes, *64bit* is fine. Install it and finally install the `mysql2` gem.
 "But `3.1.15` is not the latest one?". Did I stutter? Trust me, use this version. The latest one won't do.
 
 ```bash
