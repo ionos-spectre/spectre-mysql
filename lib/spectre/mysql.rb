@@ -34,16 +34,17 @@ module Spectre
     end
 
     class << self
-      @@logger = ::Logger.new(STDOUT)
-      @@mysql_cfg = {}
+      @@config = defined?(Spectre::CONFIG) ? Spectre::CONFIG['mysql'] : {}
+      @@logger = defined?(Spectre.logger) ? Spectre.logger : Logger.new(STDOUT)
+
       @@result = nil
       @@last_conn = nil
 
       def mysql name = nil, &block
         query = {}
 
-        if name != nil and @@mysql_cfg.key? name
-          query.merge! @@mysql_cfg[name]
+        if name != nil and @@config.key? name
+          query.merge! @@config[name]
 
           raise "No `host' set for MySQL client '#{name}'. Check your MySQL config in your environment." unless query['host']
 
@@ -86,19 +87,11 @@ module Spectre
         @@result
       end
     end
+  end
+end
 
-    Spectre.register do |config|
-      @@logger = ::Logger.new config['log_file'], progname: 'spectre/mysql'
-
-      if config.key? 'mysql'
-        @@mysql_cfg = {}
-
-        config['mysql'].each do |name, cfg|
-          @@mysql_cfg[name] = cfg
-        end
-      end
-    end
-
-    Spectre.delegate :mysql, :result, to: self
+%i{mysql}.each do |method|
+  define_method(method) do |*args, &block|
+    Spectre::MySQL.send(method, *args, &block)
   end
 end
