@@ -72,7 +72,7 @@ module Spectre
         res = []
 
         query['query'].each do |statement|
-          @@logger.info 'Executing statement "' + statement + '"'
+          @@logger.info("Executing statement '#{statement}'")
           res = client.query(statement, cast_booleans: true)
         end if query['query']
 
