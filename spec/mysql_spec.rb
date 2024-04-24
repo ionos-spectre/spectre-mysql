@@ -11,7 +11,7 @@ module Spectre
   }
 end
 
-require 'spectre/mysql'
+require_relative '../lib/spectre/mysql'
 
 RSpec.describe Spectre::MySQL do
   before do

@@ -1,12 +1,11 @@
 require 'logger'
 require 'mysql2'
-require 'spectre'
 require 'ostruct'
 
 
 module Spectre
   module MySQL
-    class MySqlQuery < Spectre::DslClass
+    class MySqlQuery
       def initialize query
         @__query = query
       end
