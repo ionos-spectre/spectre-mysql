@@ -21,7 +21,6 @@ describe 'spectre/mysql' do
     end
   end
 
-
   teardown do
     info 'drop todos database'
 
@@ -33,7 +32,6 @@ describe 'spectre/mysql' do
     end
   end
 
-
   before do
     info 'insert dummy data'
 
@@ -44,21 +42,19 @@ describe 'spectre/mysql' do
     end
   end
 
-
   after do
     info 'delete dummy data'
 
     mysql 'developer' do
       database 'developer'
-      query "DELETE FROM todos"
+      query 'DELETE FROM todos'
     end
   end
-
 
   it 'connects to a MySQL database', tags: [:mysql, :deps] do
     mysql 'developer' do
       database 'developer'
-      query "SELECT * FROM todos"
+      query 'SELECT * FROM todos'
     end
 
     expect 'two entries in database' do

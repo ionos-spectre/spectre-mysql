@@ -2,7 +2,6 @@ require 'logger'
 require 'mysql2'
 require 'ostruct'
 
-
 module Spectre
   module MySQL
     class MySqlQuery
@@ -36,29 +35,31 @@ module Spectre
       @@config = defined?(Spectre::CONFIG) ? Spectre::CONFIG['mysql'] || {} : {}
 
       def logger
-        @@logger ||= defined?(Spectre.logger) ? Spectre.logger : Logger.new(STDOUT)
+        @@logger ||= defined?(Spectre.logger) ? Spectre.logger : Logger.new($stdout)
       end
 
       @@result = nil
       @@last_conn = nil
 
-      def mysql name = nil, &block
+      def mysql(name = nil, &)
         query = {}
 
-        if name != nil and @@config.key? name
+        if !name.nil? and @@config.key? name
           query.merge! @@config[name]
 
-          raise "No `host' set for MySQL client '#{name}'. Check your MySQL config in your environment." unless query['host']
+          unless query['host']
+            raise "No `host' set for MySQL client '#{name}'. Check your MySQL config in your environment."
+          end
 
-        elsif name != nil
+        elsif !name.nil?
           query['host'] = name
-        elsif @@last_conn == nil
+        elsif @@last_conn.nil?
           raise 'No name given and there was no previous MySQL connection to use'
         end
 
-        MySqlQuery.new(query).instance_eval(&block) if block_given?
+        MySqlQuery.new(query).instance_eval(&) if block_given?
 
-        if name != nil
+        unless name.nil?
           @@last_conn = {
             host: query['host'],
             username: query['username'],
@@ -73,10 +74,10 @@ module Spectre
 
         res = []
 
-        query['query'].each do |statement|
+        query['query']&.each do |statement|
           logger.info("Executing statement '#{statement}'")
           res = client.query(statement, cast_booleans: true)
-        end if query['query']
+        end
 
         @@result = res.map { |row| OpenStruct.new row } if res
 

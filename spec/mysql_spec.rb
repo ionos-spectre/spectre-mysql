@@ -15,9 +15,9 @@ require_relative '../lib/spectre/mysql'
 
 RSpec.describe Spectre::MySQL do
   before do
-    client = double(::Mysql2::Client)
+    client = double(Mysql2::Client)
     expect(client).to receive(:close)
-    expect(client).to receive(:query).with('SELECT * FROM some_table', {:cast_booleans=>true})
+    expect(client).to receive(:query).with('SELECT * FROM some_table', {cast_booleans: true})
     allow(client).to receive(:query).and_return([{foo: 'bar'}])
 
     args = {
@@ -27,7 +27,7 @@ RSpec.describe Spectre::MySQL do
       database: 'test',
     }
 
-    allow(::Mysql2::Client).to receive(:new).with(**args).and_return(client)
+    allow(Mysql2::Client).to receive(:new).with(**args).and_return(client)
   end
 
   it 'executes a query' do
