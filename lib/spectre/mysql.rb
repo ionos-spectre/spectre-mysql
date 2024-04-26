@@ -33,8 +33,11 @@ module Spectre
     end
 
     class << self
-      @@config = defined?(Spectre::CONFIG) ? Spectre::CONFIG['mysql'] : {}
-      @@logger = defined?(Spectre.logger) ? Spectre.logger : Logger.new(STDOUT)
+      @@config = defined?(Spectre::CONFIG) ? Spectre::CONFIG['mysql'] || {} : {}
+
+      def logger
+        @@logger ||= defined?(Spectre.logger) ? Spectre.logger : Logger.new(STDOUT)
+      end
 
       @@result = nil
       @@last_conn = nil
@@ -64,14 +67,14 @@ module Spectre
           }
         end
 
-        @@logger.info "Connecting to database #{query['username']}@#{query['host']}:#{query['database']}"
+        logger.info "Connecting to database #{query['username']}@#{query['host']}:#{query['database']}"
 
         client = ::Mysql2::Client.new(**@@last_conn)
 
         res = []
 
         query['query'].each do |statement|
-          @@logger.info("Executing statement '#{statement}'")
+          logger.info("Executing statement '#{statement}'")
           res = client.query(statement, cast_booleans: true)
         end if query['query']
 
@@ -89,8 +92,8 @@ module Spectre
   end
 end
 
-%i{mysql}.each do |method|
-  define_method(method) do |*args, &block|
+%i[mysql result].each do |method|
+  Kernel.define_method(method) do |*args, &block|
     Spectre::MySQL.send(method, *args, &block)
   end
 end
