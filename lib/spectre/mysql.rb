@@ -31,21 +31,22 @@ module Spectre
       end
     end
 
-    class << self
-      @@config = defined?(Spectre::CONFIG) ? Spectre::CONFIG['mysql'] || {} : {}
+    class Client
+      include Spectre::Delegate if defined? Spectre::Delegate
 
-      def logger
-        @@logger ||= defined?(Spectre.logger) ? Spectre.logger : Logger.new($stdout)
+      def initialize config, logger
+        @config = config
+        @logger = logger
+
+        @result = nil
+        @last_conn = nil
       end
-
-      @@result = nil
-      @@last_conn = nil
 
       def mysql(name = nil, &)
         query = {}
 
-        if !name.nil? and @@config.key? name
-          query.merge! @@config[name]
+        if !name.nil? and @config.key? name
+          query.merge! @config[name]
 
           unless query['host']
             raise "No `host' set for MySQL client '#{name}'. Check your MySQL config in your environment."
@@ -53,14 +54,14 @@ module Spectre
 
         elsif !name.nil?
           query['host'] = name
-        elsif @@last_conn.nil?
+        elsif @last_conn.nil?
           raise 'No name given and there was no previous MySQL connection to use'
         end
 
         MySqlQuery.new(query).instance_eval(&) if block_given?
 
         unless name.nil?
-          @@last_conn = {
+          @last_conn = {
             host: query['host'],
             username: query['username'],
             password: query['password'],
@@ -68,33 +69,29 @@ module Spectre
           }
         end
 
-        logger.info "Connecting to database #{query['username']}@#{query['host']}:#{query['database']}"
+        @logger.info "Connecting to database #{query['username']}@#{query['host']}:#{query['database']}"
 
-        client = ::Mysql2::Client.new(**@@last_conn)
+        client = ::Mysql2::Client.new(**@last_conn)
 
         res = []
 
         query['query']&.each do |statement|
-          logger.info("Executing statement '#{statement}'")
+          @logger.info("Executing statement '#{statement}'")
           res = client.query(statement, cast_booleans: true)
         end
 
-        @@result = res.map { |row| OpenStruct.new row } if res
+        @result = res.map { |row| OpenStruct.new row } if res
 
         client.close
       end
 
       def result
-        raise 'No MySQL query has been executed yet' unless @@result
+        raise 'No MySQL query has been executed yet' unless @result
 
-        @@result
+        @result
       end
     end
   end
-end
 
-%i[mysql result].each do |method|
-  Kernel.define_method(method) do |*args, &block|
-    Spectre::MySQL.send(method, *args, &block)
-  end
+  Engine.register(MySQL::Client, :mysql, :result) if defined? Engine
 end
