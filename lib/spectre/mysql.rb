@@ -35,7 +35,7 @@ module Spectre
       include Spectre::Delegate if defined? Spectre::Delegate
 
       def initialize config, logger
-        @config = config
+        @config = config['mysql']
         @logger = logger
 
         @result = nil
