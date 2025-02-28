@@ -8,17 +8,20 @@ Gem::Specification.new do |spec|
   spec.description   = 'Adds MySQL access functionality to the spectre framework'
   spec.homepage      = 'https://github.com/ionos-spectre/spectre-mysql'
   spec.license       = 'GPL-3.0-or-later'
-  spec.required_ruby_version = '>= 3.1.0'
+  spec.required_ruby_version = '>= 3.4'
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org/'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/ionos-spectre/spectre-mysql'
   spec.metadata['changelog_uri'] = 'https://github.com/ionos-spectre/spectre-mysql/blob/develop/CHANGELOG.md'
+  spec.metadata['allowed_push_host'] = 'https://rubygems.pkg.github.com/ionos-spectre'
 
   spec.files        += Dir.glob('lib/**/*')
 
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'mysql2'
+  spec.add_dependency 'bigdecimal'
+  spec.add_dependency 'logger'
+  spec.add_dependency 'mysql2'
 end
