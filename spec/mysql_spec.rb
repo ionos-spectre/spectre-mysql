@@ -1,15 +1,13 @@
-module Spectre
-  CONFIG = {
-    'mysql' => {
-      'example' => {
-        'host' => 'localhost',
-        'username' => 'developer',
-        'password' => 'supersecure',
-        'database' => 'test',
-      },
+CONFIG = {
+  'mysql' => {
+    'example' => {
+      'host' => 'localhost',
+      'username' => 'developer',
+      'password' => 'supersecure',
+      'database' => 'test',
     },
-  }
-end
+  },
+}
 
 require_relative '../lib/spectre/mysql'
 
@@ -28,10 +26,12 @@ RSpec.describe Spectre::MySQL do
     }
 
     allow(Mysql2::Client).to receive(:new).with(**args).and_return(client)
+
+    @client = Spectre::MySQL::Client.new(CONFIG, Logger.new(StringIO.new))
   end
 
   it 'executes a query' do
-    Spectre::MySQL.mysql 'localhost' do
+    @client.mysql 'localhost' do
       username 'developer'
       password 'supersecure'
       database 'test'
@@ -39,14 +39,14 @@ RSpec.describe Spectre::MySQL do
       query 'SELECT * FROM some_table'
     end
 
-    expect(Spectre::MySQL.result.length).to eq(1)
+    expect(@client.result.length).to eq(1)
   end
 
   it 'executes a query with preconfig' do
-    Spectre::MySQL.mysql 'example' do
+    @client.mysql 'example' do
       query 'SELECT * FROM some_table'
     end
 
-    expect(Spectre::MySQL.result.length).to eq(1)
+    expect(@client.result.length).to eq(1)
   end
 end
