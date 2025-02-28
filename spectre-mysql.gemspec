@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'bigdecimal'
   spec.add_dependency 'logger'
   spec.add_dependency 'mysql2'
+  spec.add_dependency 'ostruct'
 end
