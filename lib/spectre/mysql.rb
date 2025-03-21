@@ -5,6 +5,8 @@ require 'ostruct'
 module Spectre
   module MySQL
     class MySqlQuery
+      include Spectre::Delegate if defined? Spectre::Delegate
+
       def initialize query
         @__query = query
       end
