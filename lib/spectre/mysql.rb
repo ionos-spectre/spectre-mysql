@@ -79,10 +79,35 @@ module Spectre
 
         query['query']&.each do |statement|
           @logger.info("Executing statement '#{statement}'")
-          res = client.query(statement, cast_booleans: true)
+
+          # FIXED: Disable automatic casting to prevent BigDecimal errors
+          # This prevents mysql2 from trying to cast VARCHAR columns to BigDecimal
+          res = client.query(statement, cast: false, cast_booleans: false)
         end
 
-        @result = res.map { |row| OpenStruct.new row } if res
+        # FIXED: Safely convert rows to OpenStruct with error handling
+        # If casting is still problematic, we catch the error and retry with manual conversion
+        if res
+          begin
+            @result = res.map { |row| OpenStruct.new row }
+          rescue ArgumentError => e
+            raise unless e.message.include?('BigDecimal')
+
+            @logger.warn "BigDecimal casting error detected, falling back to safe conversion: #{e.message}"
+            # Manually convert each row, skipping problematic values
+            @result = res.map do |row|
+              safe_row = {}
+              row.each do |key, value|
+                safe_row[key] = begin
+                  value.to_s
+                rescue StandardError
+                  value
+                end
+              end
+              OpenStruct.new(safe_row)
+            end
+          end
+        end
 
         client.close
       end
