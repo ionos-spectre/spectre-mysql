@@ -15,7 +15,7 @@ RSpec.describe Spectre::MySQL do
   before do
     client = double(Mysql2::Client)
     expect(client).to receive(:close)
-    expect(client).to receive(:query).with('SELECT * FROM some_table', {cast_booleans: true})
+    expect(client).to receive(:query).with('SELECT * FROM some_table', {cast: false, cast_booleans: false})
     allow(client).to receive(:query).and_return([{foo: 'bar'}])
 
     args = {
