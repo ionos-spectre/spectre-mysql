@@ -30,7 +30,7 @@ RSpec.describe Spectre::MySQL do
       username: 'developer',
       password: 'supersecure',
       database: 'test',
-      ssl_mode: :required,
+      ssl_mode: :required
     )
     expect(mysql_client).to receive(:close)
     expect(mysql_client).to receive(:query).with('SELECT * FROM some_table', { cast: false, cast_booleans: false })
@@ -53,7 +53,7 @@ RSpec.describe Spectre::MySQL do
       username: 'developer',
       password: 'supersecure',
       database: 'test',
-      ssl_mode: :required,
+      ssl_mode: :required
     )
     expect(mysql_client).to receive(:close)
     expect(mysql_client).to receive(:query).with('SELECT * FROM some_table', { cast: false, cast_booleans: false })
@@ -72,7 +72,7 @@ RSpec.describe Spectre::MySQL do
       username: 'developer',
       password: 'supersecure',
       database: 'test',
-      ssl_mode: :disabled,
+      ssl_mode: :disabled
     )
     expect(mysql_client).to receive(:close)
     expect(mysql_client).to receive(:query).with('SELECT 1', { cast: false, cast_booleans: false })
@@ -106,7 +106,7 @@ RSpec.describe Spectre::MySQL do
       username: 'developer',
       password: 'supersecure',
       database: 'test',
-      ssl_mode: :verify_ca,
+      ssl_mode: :verify_ca
     )
     expect(mysql_client).to receive(:close)
 
@@ -121,13 +121,13 @@ RSpec.describe Spectre::MySQL do
       username: 'developer',
       password: 'supersecure',
       database: 'test',
-      ssl_mode: :required,
+      ssl_mode: :required
     )
     expect(mysql_client).to receive(:query).and_raise(StandardError.new('boom'))
     expect(mysql_client).to receive(:close)
 
     client = Spectre::MySQL::Client.new(CONFIG, logger)
-    expect {
+    expect do
       client.mysql 'localhost' do
         username 'developer'
         password 'supersecure'
@@ -135,6 +135,6 @@ RSpec.describe Spectre::MySQL do
 
         query 'SELECT broken'
       end
-    }.to raise_error(StandardError, 'boom')
+    end.to raise_error(StandardError, 'boom')
   end
 end
