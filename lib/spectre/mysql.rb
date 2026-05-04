@@ -7,29 +7,33 @@ module Spectre
     class MySqlQuery
       include Spectre::Delegate if defined? Spectre::Delegate
 
-      def initialize query
-        @__query = query
+      def initialize config
+        @__config = config
       end
 
       def host hostname
-        @__query['host'] = hostname
+        @__config['host'] = hostname
       end
 
       def username user
-        @__query['username'] = user
+        @__config['username'] = user
       end
 
       def password pass
-        @__query['password'] = pass
+        @__config['password'] = pass
       end
 
       def database name
-        @__query['database'] = name
+        @__config['database'] = name
+      end
+
+      def ssl mode
+        @__config['ssl'] = mode
       end
 
       def query statement
-        @__query['query'] = [] unless @__query.key? 'query'
-        @__query['query'].append(statement)
+        @__config['query'] = [] unless @__config.key? 'query'
+        @__config['query'].append(statement)
       end
     end
 
@@ -45,39 +49,40 @@ module Spectre
       end
 
       def mysql(name = nil, &)
-        query = {}
+        config = {}
 
         if !name.nil? and @config.key? name
-          query.merge! @config[name]
+          config.merge! @config[name]
 
-          unless query['host']
+          unless config['host']
             raise "No `host' set for MySQL client '#{name}'. Check your MySQL config in your environment."
           end
 
         elsif !name.nil?
-          query['host'] = name
+          config['host'] = name
         elsif @last_conn.nil?
           raise 'No name given and there was no previous MySQL connection to use'
         end
 
-        MySqlQuery.new(query).instance_eval(&) if block_given?
+        MySqlQuery.new(config).instance_eval(&) if block_given?
 
         unless name.nil?
           @last_conn = {
-            host: query['host'],
-            username: query['username'],
-            password: query['password'],
-            database: query['database'],
+            host: config['host'],
+            username: config['username'],
+            password: config['password'],
+            database: config['database'],
+            ssl_mode: config['ssl'] || :required
           }
         end
 
-        @logger.info "Connecting to database #{query['username']}@#{query['host']}:#{query['database']}"
+        @logger.info "Connecting to database #{config['username']}@#{config['host']}:#{config['database']}"
 
         client = ::Mysql2::Client.new(**@last_conn)
 
         res = []
 
-        query['query']&.each do |statement|
+        config['query']&.each do |statement|
           @logger.info("Executing statement '#{statement}'")
 
           # FIXED: Disable automatic casting to prevent BigDecimal errors
