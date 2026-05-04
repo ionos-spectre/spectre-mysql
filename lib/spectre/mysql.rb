@@ -60,61 +60,44 @@ module Spectre
 
         elsif !name.nil?
           config['host'] = name
-        elsif @last_conn.nil?
+        elsif @last_conn
+          config['host']     = @last_conn[:host]
+          config['username'] = @last_conn[:username]
+          config['password'] = @last_conn[:password]
+          config['database'] = @last_conn[:database]
+          config['ssl']      = @last_conn[:ssl_mode]
+        else
           raise 'No name given and there was no previous MySQL connection to use'
         end
 
         MySqlQuery.new(config).instance_eval(&) if block_given?
 
-        unless name.nil?
-          @last_conn = {
-            host: config['host'],
-            username: config['username'],
-            password: config['password'],
-            database: config['database'],
-            ssl_mode: config['ssl'] || :required
-          }
-        end
+        @last_conn = {
+          host: config['host'],
+          username: config['username'],
+          password: config['password'],
+          database: config['database'],
+          ssl_mode: (config['ssl'] || :required).to_sym,
+        }
 
-        @logger.info "Connecting to database #{config['username']}@#{config['host']}:#{config['database']}"
+        @logger.info "Connecting to database #{@last_conn[:username]}@#{@last_conn[:host]}:#{@last_conn[:database]}"
 
         client = ::Mysql2::Client.new(**@last_conn)
 
-        res = []
+        begin
+          res = nil
 
-        config['query']&.each do |statement|
-          @logger.info("Executing statement '#{statement}'")
-
-          # FIXED: Disable automatic casting to prevent BigDecimal errors
-          # This prevents mysql2 from trying to cast VARCHAR columns to BigDecimal
-          res = client.query(statement, cast: false, cast_booleans: false)
-        end
-
-        # FIXED: Safely convert rows to OpenStruct with error handling
-        # If casting is still problematic, we catch the error and retry with manual conversion
-        if res
-          begin
-            @result = res.map { |row| OpenStruct.new row }
-          rescue ArgumentError => e
-            raise unless e.message.include?('BigDecimal')
-
-            @logger.warn "BigDecimal casting error detected, falling back to safe conversion: #{e.message}"
-            # Manually convert each row, skipping problematic values
-            @result = res.map do |row|
-              safe_row = {}
-              row.each do |key, value|
-                safe_row[key] = begin
-                  value.to_s
-                rescue StandardError
-                  value
-                end
-              end
-              OpenStruct.new(safe_row)
-            end
+          config['query']&.each do |statement|
+            @logger.info("Executing statement '#{statement}'")
+            # cast: false returns all columns as strings — Spectre tests treat values as opaque,
+            # and this avoids mysql2's BigDecimal/Date casting failures on driver-level mismatches.
+            res = client.query(statement, cast: false, cast_booleans: false)
           end
-        end
 
-        client.close
+          @result = res.map { |row| OpenStruct.new(row) } if res
+        ensure
+          client.close
+        end
       end
 
       def result
